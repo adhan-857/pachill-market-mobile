@@ -17,7 +17,7 @@
 >> Jalankan proyek melalui Terminal atau Command Prompt lagi untuk memastikan bahwa aplikasi tetap dapat berjalan dengan baik setelah merapikan struktur proyek.
 <br>
 
->> #### [ Membuat tiga tombol sederhana dengan ikon dan tekt + Memunculkan `Snackbar` dengan tulisan]
+>> #### [ Membuat tiga tombol sederhana dengan ikon dan teks + Memunculkan `Snackbar` dengan tulisan]
 >> Modifikasi File main.dart dengan cara mengubah tema aplikasi dengan mengatur `colorScheme` menjadi `ColorScheme.fromSeed(seedColor: Colors.indigo)`. Setelah mengubah warna tema aplikasi, saya mengubah sifat widget halaman menu menjadi *stateless* dengan cara menghapus `MyHomePage(title: 'Flutter Demo Home Page')` di `main.dart`. Di `menu.dart`, ubah widget halaman dari *stateful* menjadi *stateless* dengan memodifikasi kode.
 >>
 >> Setelah mengubah sifat widget halaman menu menjadi stateless, saya menambahkan teks dan card untuk memperlihatkan barang yang dijual. Pertama, kita *define* tipe pada list:<br>
