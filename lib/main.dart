@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pachill_market/menu.dart';
+import 'package:pachill_market/screens/menu.dart';
+import 'package:pachill_market/screens/shoplist_form.dart';
+import 'package:pachill_market/screens/list_product.dart';
+
 
 void main() {
   runApp(const MyApp());

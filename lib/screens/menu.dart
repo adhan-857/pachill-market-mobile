@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'package:pachill_market/screens/shoplist_form.dart';
+import 'package:pachill_market/screens/list_product.dart';
+import 'package:pachill_market/widgets/left_drawer.dart';
 class MyHomePage extends StatelessWidget {
     MyHomePage({Key? key}) : super(key: key);
 
     final List<ShopItem> items = [
-        ShopItem("Lihat Produk", Icons.checklist),
+        ShopItem("Lihat Produk", Icons.shelves),
         ShopItem("Tambah Produk", Icons.add_shopping_cart),
         ShopItem("Logout", Icons.logout),
     ];
@@ -43,6 +45,7 @@ class MyHomePage extends StatelessWidget {
             ),
           ),
         ),
+        drawer: const LeftDrawer(),
             body: SingleChildScrollView(
               // Widget wrapper yang dapat discroll
               child: Padding(
@@ -115,11 +118,33 @@ class ShopCard extends StatelessWidget {
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () {
-          // Memunculkan SnackBar ketika diklik
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!")));
+          if (item.name == "Tambah Produk") {
+            // Pindah ke halaman ShopFormPage ketika "Tambah Produk" ditekan
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ShopFormPage(),
+              ),
+            );
+          }
+          else if (item.name == "Lihat Produk") {
+            // Pindah ke halaman ShopFormPage ketika "Lihat Produk" ditekan
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const ListProductPage(),
+              ),
+            );
+          }
+          else {
+            // Memunculkan SnackBar untuk item lainnya
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Kamu telah menekan tombol ${item.name}!"),
+              ),
+            );
+          }
         },
         child: Container(
           // Container untuk menyimpan Icon dan Text
