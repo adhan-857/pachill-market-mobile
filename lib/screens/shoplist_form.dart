@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
-import 'package:pachill_market/screens/list_product.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:pachill_market/screens/menu.dart';
+import 'package:pachill_market/widgets/left_drawer.dart';
 
 class ShopFormPage extends StatefulWidget {
   const ShopFormPage({Key? key}) : super(key: key);
@@ -10,7 +16,7 @@ class ShopFormPage extends StatefulWidget {
 
 class _ShopFormPageState extends State<ShopFormPage> {
   final _formKey = GlobalKey<FormState>();
-  String _name = "";
+  String _name1 = "";
   int _price = 0;
   int _amount = 0;
   String _description = "";
@@ -22,6 +28,8 @@ class _ShopFormPageState extends State<ShopFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -56,7 +64,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _name = value!;
+                      _name1 = value!;
                     });
                   },
                   validator: (String? value) {
@@ -81,6 +89,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -124,6 +133,7 @@ class _ShopFormPageState extends State<ShopFormPage> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
+                
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
@@ -213,45 +223,86 @@ class _ShopFormPageState extends State<ShopFormPage> {
                       backgroundColor: MaterialStateProperty.all(
                           Color.fromARGB(255, 0, 94, 255)),
                     ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        productList.add({
-                          'name': _name,
-                          'price': _price,
-                          'amount': _amount,
-                          'description': _description,
-                        });
-                        
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Produk berhasil tersimpan'),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Nama: $_name'),
-                                    Text('Harga: $_price'),
-                                    Text('Jumlah: $_amount'),
-                                    Text('Deskripsi: $_description'),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  child: const Text('OK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                      _formKey.currentState!.reset();
-                    },
+onPressed: () async {
+  if (_formKey.currentState!.validate()) {
+    // Membuat data produk dalam bentuk map
+    Map<String, dynamic> productData = {
+      'name1': _name1,  // Sesuaikan dengan nama field di model Django
+      'price': _price,
+      'amount': _amount,
+      'description': _description,
+    };
+
+    // Mengubah data produk menjadi JSON
+    String body = json.encode(productData);
+
+    // URL server Django Anda
+    String url = 'http://127.0.0.1:8000/create-flutter/';
+
+    // Melakukan request POST ke server Django
+    http.Response response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      // Jika berhasil, tampilkan dialog sukses
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Produk berhasil tersimpan'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nama: $_name1'),
+                  Text('Harga: $_price'),
+                  Text('Jumlah: $_amount'),
+                  Text('Deskripsi: $_description'),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Jika gagal, tampilkan error
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Gagal menyimpan produk'),
+            content: SingleChildScrollView(
+              child: Text('Server Error: ${response.statusCode}'),
+            ),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    // Reset form setelah proses selesai
+    _formKey.currentState!.reset();
+  }
+},
+
                     child: const Text(
                       "Save",
                       style: TextStyle(color: Colors.white),

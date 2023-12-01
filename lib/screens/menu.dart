@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pachill_market/screens/shoplist_form.dart';
-import 'package:pachill_market/screens/list_product.dart';
 import 'package:pachill_market/widgets/left_drawer.dart';
+import 'package:pachill_market/widgets/shop_card.dart';
+
 class MyHomePage extends StatelessWidget {
     MyHomePage({Key? key}) : super(key: key);
 
@@ -85,90 +85,4 @@ class MyHomePage extends StatelessWidget {
             ),
           );
     }
-}
-
-class ShopItem {
-  final String name;
-  final IconData icon;
-
-  ShopItem(this.name, this.icon);
-}
-
-class ShopCard extends StatelessWidget {
-  final ShopItem item;
-
-  const ShopCard(this.item, {super.key}); // Constructor
-
-  @override
-  Widget build(BuildContext context) {
-    Color backgroundColor;
-    switch (item.name) {
-      case "Tambah Produk":
-        backgroundColor = Colors.green;
-        break;
-      case "Logout":
-        backgroundColor = Colors.red;
-        break;
-      default:
-        backgroundColor = Colors.indigo;
-    }
-
-    return Material(
-      color: backgroundColor, // Apply the determined color
-      child: InkWell(
-        // Area responsive terhadap sentuhan
-        onTap: () {
-          if (item.name == "Tambah Produk") {
-            // Pindah ke halaman ShopFormPage ketika "Tambah Produk" ditekan
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ShopFormPage(),
-              ),
-            );
-          }
-          else if (item.name == "Lihat Produk") {
-            // Pindah ke halaman ShopFormPage ketika "Lihat Produk" ditekan
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ListProductPage(),
-              ),
-            );
-          }
-          else {
-            // Memunculkan SnackBar untuk item lainnya
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Kamu telah menekan tombol ${item.name}!"),
-              ),
-            );
-          }
-        },
-        child: Container(
-          // Container untuk menyimpan Icon dan Text
-          padding: const EdgeInsets.all(8),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 30.0,
-                ),
-                const Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  item.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }
